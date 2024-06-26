@@ -1,12 +1,17 @@
+import re
 # TODO-9: Import and print the logo from art.py when the program starts.
 from logo import logo
 print(logo)
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+go_again = True
+pattern = r'^[a-zA-Z]$'
 
-direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
-text = input("Type your message:\n").lower()
-shift = int(input("Type the shift number:\n"))
 
+def is_special_char(letter):
+    if re.match(pattern, letter):
+        return False
+    else:
+        return True
 
 # TODO-1: Create a function called 'encrypt' that takes the 'text' and 'shift' as inputs.
 # def encrypt(message, shift_amount):
@@ -63,36 +68,50 @@ shift = int(input("Type the shift number:\n"))
 def ceaser(message, shift_number, direction_type):
     result = ''
 
-    for letter in message:
-        if letter in alphabet:
-            if direction_type == 'decode':
-                print(letter, 'letter')
+    if direction_type == 'decode':
+        for letter in message:
+            if is_special_char(letter):
+                result += letter
+            else:
                 code = alphabet.index(letter) - shift_number
                 result += alphabet[code]
-                print(code)
-            elif direction_type == 'encode':
+    elif direction_type == 'encode':
+        for letter in message:
+            # TODO-11: What happens if the user enters a number/symbol/space?
+            # Can you fix the code to keep the number/symbol/space when the text is encoded/decoded?
+            # e.g. start_text = "meet me at 3"
+            # end_text = "•••• •• •• 3"
+            if is_special_char(letter):
+                result += letter
+            else:
                 code = alphabet.index(letter) + shift_number
                 result += alphabet[code]
-            else:
-                print('Something went wrong!')
-
+    else:
+        print('Something went wrong!')
     print(f"The {direction_type}d message is {result}")
 
 
-# TODO-8: Call the caesar() function, passing over the 'text', 'shift' and 'direction' values.
-ceaser(text, shift, direction)
+while go_again:
+    # TODO-12: Can you figure out a way to ask the user if they want to restart the cipher program?
+    # e.g. Type 'yes' if you want to go again. Otherwise type 'no'.
+    # If they type 'yes' then ask them for the direction/text/shift again and call the caesar() function again?
+    # Hint: Try creating a while loop that continues to execute the program if the user types 'yes'.
+    direction = input("Type 'encode' to encrypt, type 'decode' to decrypt:\n")
+    text = input("Type your message:\n").lower()
+    shift = int(input("Type the shift number:\n"))
+    # TODO-10: What if the user enters a shift that is greater than the number of letters in the alphabet?
+    # Try running the program and entering a shift number of 45.
+    # Add some code so that the program continues to work even if the user enters a shift number greater than 26.
+    # Hint: Think about how you can use the modulus (%).
+    safe_shift = shift % len(alphabet)
+    # TODO-8: Call the caesar() function, passing over the 'text', 'shift' and 'direction' values.
+    ceaser(text, safe_shift, direction)
+    restart = input("Do you want to go again? Type 'yes' or 'no'.\n").lower()
+    if restart == 'no':
+        go_again = False
+        print('Goodbye')
 
 
-# TODO-12: Can you figure out a way to ask the user if they want to restart the cipher program?
-# e.g. Type 'yes' if you want to go again. Otherwise type 'no'.
-# If they type 'yes' then ask them for the direction/text/shift again and call the caesar() function again?
-# Hint: Try creating a while loop that continues to execute the program if the user types 'yes'.
 
-# TODO-11: What happens if the user enters a number/symbol/space?
-# Can you fix the code to keep the number/symbol/space when the text is encoded/decoded?
-# e.g. start_text = "meet me at 3"
-# end_text = "•••• •• •• 3"
-# TODO-10: What if the user enters a shift that is greater than the number of letters in the alphabet?
-# Try running the program and entering a shift number of 45.
-# Add some code so that the program continues to work even if the user enters a shift number greater than 26.
-# Hint: Think about how you can use the modulus (%).
+
+
